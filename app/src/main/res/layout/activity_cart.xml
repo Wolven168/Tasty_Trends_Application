@@ -167,8 +167,6 @@
 
         <EditText
             android:id="@+id/tvRoomAddress"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginStart="16dp"
@@ -184,8 +182,6 @@
 
         <Button
             android:id="@+id/btnBuyNow"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_margin="16dp"

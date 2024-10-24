@@ -14,7 +14,7 @@ import com.rexdev.tasty_trends.adapter.RecyclerViewStallsMenuAdapter
 import com.rexdev.tasty_trends.dataClass.ShopItem
 import com.rexdev.tasty_trends.dataClass.Stalls
 import com.rexdev.tasty_trends.R
-import com.roydev.tastytrends.RetrofitInstance
+import com.rexdev.tasty_trends.domain.RetrofitInstance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -96,35 +96,35 @@ class StallActivity : AppCompatActivity() {
     }
 
     private fun loadStallItemsData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = shop_Id?.let { RetrofitInstance.api.getShopItems(it) }
-                if (response != null) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { items ->
-                            shopItemList.clear()
-                            shopItemList.addAll(items)
-                            withContext(Dispatchers.Main) {
-                                recyclerViewStallMenuAdapter!!.notifyDataSetChanged()
-                            }
-                        }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(this@StallActivity, "Error: ${response.message()}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            } catch (e: HttpException) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@StallActivity, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@StallActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        // Notify the adapter about data changes
-        recyclerViewStallMenuAdapter!!.notifyDataSetChanged()
+//        CoroutineScope(Dispatchers.IO).launch {
+//            try {
+//                val response = shop_Id?.let { RetrofitInstance.api.getShopItems(it) }
+//                if (response != null) {
+//                    if (response.res) {
+//                        response.body()?.let { items ->
+//                            shopItemList.clear()
+//                            shopItemList.addAll(items)
+//                            withContext(Dispatchers.Main) {
+//                                recyclerViewStallMenuAdapter!!.notifyDataSetChanged()
+//                            }
+//                        }
+//                    } else {
+//                        withContext(Dispatchers.Main) {
+//                            Toast.makeText(this@StallActivity, "Error: ${response.message}", Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                }
+//            } catch (e: HttpException) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(this@StallActivity, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
+//                }
+//            } catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(this@StallActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        }
+//        // Notify the adapter about data changes
+//        recyclerViewStallMenuAdapter!!.notifyDataSetChanged()
     }
 }

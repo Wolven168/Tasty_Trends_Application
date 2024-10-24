@@ -16,8 +16,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.roydev.tastytrends.RegisterReq
-import com.roydev.tastytrends.RetrofitInstance
+import com.rexdev.tasty_trends.dataClass.RegisterReq
+import com.rexdev.tasty_trends.dataClass.RegisterRes
+import com.rexdev.tasty_trends.domain.RetrofitInstance
 
 class SignupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,33 +62,49 @@ class SignupActivity : AppCompatActivity() {
     private fun registerUser(username: String, email: String, password: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val registerReq = RegisterReq( username, email, password)
+                val registerReq = RegisterReq(username, email, password)
                 val response = RetrofitInstance.api.register(registerReq)
 
-                Log.d("SignupActivity", "Request: ${Gson().toJson(registerReq)}")
+                Log.d("SignupActivity", "Raw Response: ${response.raw()}")
 
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
-                        // Handle success
-                        Toast.makeText(this@SignupActivity, response.message(), Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
-                        finish()
+                        val registerResponse = response.body()
+                        if (registerResponse != null) {
+                            Toast.makeText(this@SignupActivity, registerResponse.message, Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
+                            finish()
+                        } else {
+                            Log.e("SignupActivity", "Unexpected response: null")
+                        }
                     } else {
-                        Log.e("SignupActivity", "Error code: ${response.code()}") // Log the response code
-                        val errorBody = response.errorBody() ?: "Unknown error"
-                        Log.e("SignupActivity", "Error: $errorBody")
-                        Toast.makeText(this@SignupActivity, "Error: $errorBody", Toast.LENGTH_SHORT).show()
-                    }
+                        // Handle error response
+                        val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                        Log.e("SignupActivity", "Error response: $errorBody")
 
+                        // Attempt to handle both JSON and plain text responses
+                        try {
+                            if (errorBody.startsWith("{")) { // Check if it's likely JSON
+                                val jsonResponse = Gson().fromJson(errorBody, RegisterRes::class.java)
+                                Toast.makeText(this@SignupActivity, jsonResponse.message, Toast.LENGTH_SHORT).show()
+                            } else {
+                                // Handle as a plain string
+                                Toast.makeText(this@SignupActivity, errorBody, Toast.LENGTH_SHORT).show()
+                            }
+                        } catch (e: Exception) {
+                            // Fallback for unexpected formats
+                            Log.e("SignupActivity", "Failed to parse error response: ${e.message}")
+                            Toast.makeText(this@SignupActivity, "Unexpected error: $errorBody", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             } catch (e: Exception) {
-                Log.e("SignupActivity", "Error: ${e.message}", e)
+                Log.e("SignupActivity", "Registration failed: ${e.message}", e)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@SignupActivity, "Registration failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
-
 
 }

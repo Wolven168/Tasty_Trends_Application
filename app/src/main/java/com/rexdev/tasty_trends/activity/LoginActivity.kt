@@ -13,8 +13,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.rexdev.tasty_trends.R
-import com.roydev.tastytrends.LoginReq
-import com.roydev.tastytrends.RetrofitInstance
+import com.rexdev.tasty_trends.dataClass.LoginReq
+import com.rexdev.tasty_trends.domain.RetrofitInstance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -63,7 +63,6 @@ class LoginActivity : AppCompatActivity() {
                         if (loginRes.success) {
                             // Navigate to the next activity or handle success
                             Toast.makeText(this@LoginActivity, "Login successful!", Toast.LENGTH_SHORT).show()
-
                             startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                         } else {
                             Toast.makeText(this@LoginActivity, loginRes.message, Toast.LENGTH_SHORT).show()

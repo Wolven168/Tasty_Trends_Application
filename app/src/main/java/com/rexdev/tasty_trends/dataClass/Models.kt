@@ -1,14 +1,17 @@
-package com.roydev.tastytrends
+package com.rexdev.tasty_trends.dataClass
+
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 data class RegisterReq(
-    val username: String,
+    val user_name: String,
     val email: String,
     val password: String,
 )
 
 data class RegisterRes(
-    val message: String,
-    val isSuccessful: Boolean
+    val message: String? = null,
+    val success: Boolean
 )
 
 data class LoginReq(
@@ -17,10 +20,10 @@ data class LoginReq(
 )
 
 data class LoginRes(
-    //val token: String, // The authentication token
-    val message: String,
+    val token: String? = null, // Nullable in case the token is not provided
+    val message: String? = null,
     val success: Boolean,
-    val id: String,
+    val id: String? = null,
 )
 
 data class UserDataReq(
@@ -30,36 +33,37 @@ data class UserDataReq(
 data class UserDataRes(
     val img: String,
     val name: String,
-    val shop_id: String,
+    val shopId: String,
 )
 
 data class TicketReq(
-    val shopId: String, // ID of the shop where the ticket is for
-    val buyerId: String  // ID of the buyer
+    val shop_id: String, // ID of the shop where the ticket is for
+    val buyer_id: String  // ID of the buyer
 )
 
 data class Ticket(
     val id: String,      // Unique identifier for the ticket
-    val shopId: String,  // ID of the shop associated with the ticket
-    val buyerId: String, // ID of the buyer who purchased the ticket
+    val shop_id: String,  // ID of the shop associated with the ticket
+    val buyer_id: String, // ID of the buyer who purchased the ticket
     val status: String,
 )
 
-data class CreateTicketReq (
-    val buyerId: String,
-    val shopId: String,
-    val itemId: String,
+data class CreateTicketReq(
+    val buyer_id: String,
+    val shop_id: String,
+    val item_id: String,
     val quantity: Int,
     val price: Double,
-    val location: String,
+    val location: String?
 )
 
+@Parcelize
+data class CreateTicketRes (
+    val message: String? = null,
+    val success: Boolean,
+    val errorMessage: String? = null, // Optional field for error messages
+) : Parcelable
+
 data class TicketRes(
-    val tickets: List<Ticket>, // List of tickets associated with the response
-    val message: String        // Additional message from the response
-) {
-    val isSuccessful: Boolean
-        get() {
-            TODO()
-        }
-}
+    val message: String? = null        // Additional message from the response
+)

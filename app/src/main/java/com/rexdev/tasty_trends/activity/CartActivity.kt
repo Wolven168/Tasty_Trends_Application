@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -14,30 +15,32 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rexdev.tasty_trends.adapter.RecyclerViewCartMenuAdapter
 import com.rexdev.tasty_trends.R
 import com.rexdev.tasty_trends.dataClass.CartItem
 import com.rexdev.tasty_trends.global.GlobalVariables
-import com.roydev.tastytrends.CreateTicketReq
-import com.roydev.tastytrends.RetrofitInstance
+import com.rexdev.tasty_trends.dataClass.CreateTicketReq
+import com.rexdev.tasty_trends.domain.RetrofitInstance
 import kotlinx.coroutines.launch
+import okio.IOException
+import retrofit2.HttpException
 
 class CartActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewCartAdapter: RecyclerViewCartMenuAdapter
     private val app = GlobalVariables
+    private lateinit var roomAddress: EditText
+    private lateinit var btnBuy: Button
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
-        val roomAddress: EditText? = findViewById(R.id.tvRoomAddress)
-        val btnBuy: Button? = findViewById(R.id.btnBuyNow) // Initialize btnBuy after setContentView
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_cart)
+        roomAddress = findViewById(R.id.tvRoomAddress)
+        btnBuy = findViewById(R.id.btnBuyNow)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -54,100 +57,148 @@ class CartActivity : AppCompatActivity() {
         if (app.CARTLIST.isEmpty()) {
             showEmptyCartMessage()
         } else {
-            // Initialize adapter with the correct type
+            // Initialize RecyclerView
             recyclerView = findViewById(R.id.rvCartList)
-            recyclerView.layoutManager = LinearLayoutManager(this)
-            recyclerViewCartAdapter = RecyclerViewCartMenuAdapter()
             val layoutManager = GridLayoutManager(this, 1)
             recyclerView.layoutManager = layoutManager
+            recyclerViewCartAdapter = RecyclerViewCartMenuAdapter()
             recyclerView.adapter = recyclerViewCartAdapter
 
             loadCartItems()
         }
 
-        btnBuy?.setOnClickListener {
-            if (app.CARTLIST.isEmpty()) {
-                showEmptyCartMessage()
-            } else {
-                // Prepare the list of ticket requests
-                val ticketRequests = app.CARTLIST.map { cartItem ->
-                    app.PROFILE_ID?.let { it1 ->
-                        CreateTicketReq(
-                            buyerId = it1,
-                            shopId = cartItem.shopId, // Use the appropriate shopId
-                            itemId = cartItem.itemId,
-                            quantity = cartItem.quantity,
-                            price = cartItem.totalPrice(),
-                            location = roomAddress.toString() // You might want to replace this with actual user input
-                        )
-                    }
-                }
+        btnBuy.setOnClickListener {
+            buyAll()
+        }
+    }
 
-                // Launch a coroutine to make the network calls
-                lifecycleScope.launch {
-                    if (app.CARTLIST.isNotEmpty()) {
-                        try {
-                            val responses = ticketRequests.map { ticketRequest ->
-                                RetrofitInstance.api.createTicket(ticketRequest)
-                            }
-                            // Check responses
-                            responses.forEach { response ->
-                                if (response.isSuccessful) {
-                                    // Handle success (e.g., show a success message)
-                                    Toast.makeText(this@CartActivity, "Ticket created successfully!", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    // Handle error for this specific ticket request
-                                    Toast.makeText(this@CartActivity, "Error creating ticket: ${response.message}", Toast.LENGTH_SHORT).show()
-                                }
-                            }
+    private fun buyAll() {
+        if (app.CARTLIST.isEmpty()) {
+            showEmptyCartMessage()
+            return
+        }
 
-                            // Optionally, clear the cart or navigate to another screen
-                        } catch (e: Exception) {
-                            Toast.makeText(this@CartActivity, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
+        // Loop through the cart list
+        for (index in app.CARTLIST.indices) {
+            // Get the current item
+            val cartItem = app.CARTLIST[index]
+
+            // Create the ticket request
+            val ticketRequest = CreateTicketReq(
+                buyer_id = app.PROFILE_ID,
+                shop_id = cartItem.shopId,
+                item_id = cartItem.itemId,
+                quantity = cartItem.quantity,
+                price = cartItem.totalPrice(),
+                location = roomAddress.text.toString() // User input for location
+            )
+
+            lifecycleScope.launch {
+                try {
+                    // Make the API call to create a ticket
+                    val response = RetrofitInstance.api.createTicket(ticketRequest)
+
+                    // Log the response
+                    Log.d("API Response", "Response code: ${response.message}, Body: ${response.message}")
+
+                    if (response.success) {
+                        // Remove the item from the cart if the ticket is created successfully
+                        if (app.CARTLIST.isNotEmpty()) {
+                            app.CARTLIST.removeAt(index)
+                            recyclerViewCartAdapter.removeItem(index)
+                            recyclerViewCartAdapter!!.notifyDataSetChanged()
+                            Toast.makeText(this@CartActivity, "Ticket created successfully!", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        showEmptyCartMessage()
+                        // Log the raw error response
+                        val errorBody = response.message?: "Unknown error"
+                        Log.e("API Error", "Response code: ${response.message}, Body: $errorBody")
+
+                        // Notify the user
+                        Toast.makeText(this@CartActivity, "Error creating ticket: $errorBody", Toast.LENGTH_SHORT).show()
                     }
+                } catch (e: Exception) {
+                    Log.e("CartActivity", "Unexpected error: ${e.message}")
+                    Log.e("CartActivity", "Full error: ${e.stackTraceToString()}")
+                    Toast.makeText(this@CartActivity, "An unexpected error occurred: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
+
+    private fun buyOne(){
+        if (app.CARTLIST.isEmpty()) {
+            showEmptyCartMessage()
+        } else {
+            // Get the first item in the cart
+            val firstCartItem = app.CARTLIST[0]
+            val ticketRequest = CreateTicketReq(
+                buyer_id = app.PROFILE_ID,
+                shop_id = firstCartItem.shopId,
+                item_id = firstCartItem.itemId,
+                quantity = firstCartItem.quantity,
+                price = firstCartItem.totalPrice(),
+                location = roomAddress.text.toString() // Use the actual user input
+            )
+
+
+            lifecycleScope.launch {
+                try {
+                    // Make the API call to create a ticket for the first item
+                    val response = RetrofitInstance.api.createTicket(ticketRequest)
+
+                    // Log the response
+                    Log.e("API Response", "Response code: ${response.message}, Body: ${response.message}")
+
+                    if (response.success) {
+                        // Remove the item from the cart if the ticket is created successfully
+                        app.CARTLIST.removeAt(0)
+                        Toast.makeText(this@CartActivity, "Ticket created successfully!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Log the raw error response
+                        val errorBody = response.errorMessage?: "Unknown error"
+                        Log.e("API Error", "Response code: ${response.errorMessage}, Body: $errorBody")
+
+                        // Notify the user
+                        Toast.makeText(this@CartActivity, "Error creating ticket: $errorBody", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Log.e("CartActivity", "Unexpected error: ${e.message}")
+                    Log.e("CartActivity", "Full error: ${e.stackTraceToString()}")
+                    Toast.makeText(this@CartActivity, "An unexpected error occurred: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
     private fun loadCartItems() {
         val sharedPreferences = getSharedPreferences("Cart", Context.MODE_PRIVATE)
-        val cartItems = app.CARTLIST // Assuming this is your global variable
+        val cartItems = app.CARTLIST
 
         sharedPreferences.all.forEach { entry ->
             if (entry.key.endsWith("_name")) {
-                val shopId = entry.key.split("_")[0] // Extract shopId
+                val shopId = entry.key.split("_")[0]
                 val itemId = entry.value.toString()
                 val itemName = sharedPreferences.getString("${itemId}_name", null)
                 val itemImage = sharedPreferences.getString("${itemId}_image", "") ?: ""
                 val priceString = sharedPreferences.getString("${itemId}_price", "0") ?: "0"
                 val quantity = sharedPreferences.getInt("${itemId}_quantity", 1)
 
-                // Convert price to Double
                 val pricePerItem = priceString.toDoubleOrNull() ?: 0.0
-
-                // Create a new CartItem and add it to the list
                 val cartItem = CartItem(shopId, itemId, itemName, itemImage, quantity, pricePerItem)
                 cartItems.add(cartItem)
             }
         }
 
-        // Check if cart is empty and show a message
         if (cartItems.isEmpty()) {
             showEmptyCartMessage()
-        }
-        else {
-            recyclerViewCartAdapter!!.notifyDataSetChanged()
+        } else {
+            recyclerViewCartAdapter.notifyDataSetChanged()
         }
     }
 
-
-
     private fun showEmptyCartMessage() {
-        // Here you can use a TextView to display the message
         Toast.makeText(this, "No items in the cart", Toast.LENGTH_SHORT).show()
+        //findViewById<TextView>(R.id.emptycart).visibility = View.VISIBLE // Optional: Show a view for the empty cart message
     }
 }

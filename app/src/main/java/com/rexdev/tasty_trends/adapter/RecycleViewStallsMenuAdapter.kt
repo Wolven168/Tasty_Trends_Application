@@ -28,7 +28,7 @@ class RecyclerViewStallsMenuAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = shopItemList.get(position)
             holder.tvmenuName.text = item.itemName
-            holder.tvprice.text = item.price.toString()
+            holder.tvprice.text = "₱${item.price}"
         // Load image using Glide or Picasso
             Picasso.get()
                 .load(item.image)
