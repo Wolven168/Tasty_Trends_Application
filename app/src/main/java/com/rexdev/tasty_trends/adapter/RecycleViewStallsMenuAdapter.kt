@@ -1,18 +1,17 @@
-package com.rexdev.tasty_trends.Adapter
+package com.rexdev.tasty_trends.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.rexdev.tasty_trends.DataClass.CartItem
-import com.rexdev.tasty_trends.DataClass.ShopItem
-import com.rexdev.tasty_trends.Global.GlobalVariables
+import com.rexdev.tasty_trends.dataClass.CartItem
+import com.rexdev.tasty_trends.dataClass.ShopItem
+import com.rexdev.tasty_trends.global.GlobalVariables
 import com.rexdev.tasty_trends.R
-import com.rexdev.tasty_trends.Tool.ClickListenerInit
+import com.rexdev.tasty_trends.tools.ClickListenerInit
 import com.squareup.picasso.Picasso
 
 
@@ -29,7 +28,7 @@ class RecyclerViewStallsMenuAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = shopItemList.get(position)
             holder.tvmenuName.text = item.itemName
-            holder.tvprice.text = item.price.toString()
+            holder.tvprice.text = "₱${item.price}"
         // Load image using Glide or Picasso
             Picasso.get()
                 .load(item.image)
@@ -44,6 +43,7 @@ class RecyclerViewStallsMenuAdapter(
             // Create a CartItem with quantity set to 1
             val cartItem = item.let { it1 ->
                 CartItem(
+                    shopId = it1.shopId,
                     itemId = it1.itemId,
                     itemName = item.itemName,
                     itemImage = item.image,

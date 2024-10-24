@@ -12,9 +12,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.rexdev.tasty_trends.Activity.HomeActivity
-import com.rexdev.tasty_trends.Adapter.RecyclerViewStallsMenuAdapter
-import com.rexdev.tasty_trends.DataClass.ShopItem
+import com.rexdev.tasty_trends.activity.HomeActivity
+import com.rexdev.tasty_trends.adapter.RecyclerViewStallsMenuAdapter
+import com.rexdev.tasty_trends.dataClass.ShopItem
 import com.rexdev.tasty_trends.R
 
 class FavoritesActivity : AppCompatActivity() {

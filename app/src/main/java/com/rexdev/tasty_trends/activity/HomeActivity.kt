@@ -1,4 +1,4 @@
-package com.rexdev.tasty_trends.Activity
+package com.rexdev.tasty_trends.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,8 +16,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
-import com.rexdev.tasty_trends.Adapter.RecyclerViewStallsAdapter
-import com.rexdev.tasty_trends.DataClass.Stalls
+import com.rexdev.tasty_trends.adapter.RecyclerViewStallsAdapter
+import com.rexdev.tasty_trends.dataClass.Stalls
 import com.rexdev.tasty_trends.R
 import com.migsdev.tastytrends.FavoritesActivity
 import com.migsdev.tastytrends.OrderActivity
