@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#ebebeb"
     android:orientation="vertical"
-    tools:context="Activity.ForgotPassActivity">
+    tools:context="activity.ForgotPassActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

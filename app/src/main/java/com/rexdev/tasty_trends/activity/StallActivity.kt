@@ -1,8 +1,7 @@
-package com.rexdev.tasty_trends.Activity
+package com.rexdev.tasty_trends.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -11,9 +10,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.rexdev.tasty_trends.Adapter.RecyclerViewStallsMenuAdapter
-import com.rexdev.tasty_trends.DataClass.CartItem
-import com.rexdev.tasty_trends.DataClass.ShopItem
+import com.rexdev.tasty_trends.adapter.RecyclerViewStallsMenuAdapter
+import com.rexdev.tasty_trends.dataClass.ShopItem
+import com.rexdev.tasty_trends.dataClass.Stalls
 import com.rexdev.tasty_trends.R
 import com.roydev.tastytrends.RetrofitInstance
 import kotlinx.coroutines.CoroutineScope
@@ -26,11 +25,21 @@ class StallActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var recyclerViewStallMenuAdapter: RecyclerViewStallsMenuAdapter? = null
     private var shopItemList = mutableListOf<ShopItem>()
+    private var shop_Id: String? = ""
+    private var shop_Name: String? = null
+    private var shop_Img: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_stallactivity)
+        val shopData = intent.getParcelableExtra<Stalls>("stall_data")
+
+        shopData?.let {
+            shop_Id = shopData.shopId
+            shop_Name = shopData.shopName
+            shop_Img = shopData.image
+        }
 
         // Setup edge-to-edge behavior
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -58,13 +67,24 @@ class StallActivity : AppCompatActivity() {
         recyclerView!!.adapter = recyclerViewStallMenuAdapter
 
         loadSampleItemData()
-        loadStallItemsData()
+        //loadStallItemsData()
     }
 
     private fun loadSampleItemData() {
         // Create sample items
         val sampleItems = listOf(
-            ShopItem("1", "jfc_12345678901234567890123456789012", "EggSilog", 50.00, "https://gluttodigest.com/wp-content/uploads/2018/03/beef-tapsilog-silog-what-is-how-to-make-and-where-find-buy-order-best-longsilog-bistro-express-tosilog-bangsilog-spamsilog-menu-recipe-meals-restaurants-near-me-500x363.jpg", true),
+            ShopItem("Egg_Silog_12345678901234567890123456789012",
+                "jfc_12345678901234567890123456789012",
+                "Egg_Silog",
+                50.00,
+                "https://gluttodigest.com/wp-content/uploads/2018/03/beef-tapsilog-silog-what-is-how-to-make-and-where-find-buy-order-best-longsilog-bistro-express-tosilog-bangsilog-spamsilog-menu-recipe-meals-restaurants-near-me-500x363.jpg",
+                true),
+            ShopItem("Chicken_Barbeque_12345678901234567890123456789012",
+                "jfc_12345678901234567890123456789012",
+                "Chicken Barbeque",
+                75.00,
+                "https://www.allrecipes.com/thmb/APtZNY1GgOf3Ph0JUc-j4dImjrU=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/2467480-southern-bbq-chicken-Allrecipes-Magazine-4x3-1-3e180dccbaae446c8c2d05f708611fc6.jpg",
+                true),
         )
 
         // Clear the list and add sample items
@@ -78,18 +98,20 @@ class StallActivity : AppCompatActivity() {
     private fun loadStallItemsData() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = RetrofitInstance.api.getShopItems("")
-                if (response.isSuccessful) {
-                    response.body()?.let { items ->
-                        shopItemList.clear()
-                        shopItemList.addAll(items)
-                        withContext(Dispatchers.Main) {
-                            recyclerViewStallMenuAdapter!!.notifyDataSetChanged()
+                val response = shop_Id?.let { RetrofitInstance.api.getShopItems(it) }
+                if (response != null) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { items ->
+                            shopItemList.clear()
+                            shopItemList.addAll(items)
+                            withContext(Dispatchers.Main) {
+                                recyclerViewStallMenuAdapter!!.notifyDataSetChanged()
+                            }
                         }
-                    }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@StallActivity, "Error: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@StallActivity, "Error: ${response.message()}", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             } catch (e: HttpException) {
@@ -102,7 +124,7 @@ class StallActivity : AppCompatActivity() {
                 }
             }
         }
+        // Notify the adapter about data changes
+        recyclerViewStallMenuAdapter!!.notifyDataSetChanged()
     }
-
-
 }

@@ -42,10 +42,24 @@ data class Ticket(
     val id: String,      // Unique identifier for the ticket
     val shopId: String,  // ID of the shop associated with the ticket
     val buyerId: String, // ID of the buyer who purchased the ticket
-    // Add additional fields as needed (e.g., purchaseDate, status)
+    val status: String,
+)
+
+data class CreateTicketReq (
+    val buyerId: String,
+    val shopId: String,
+    val itemId: String,
+    val quantity: Int,
+    val price: Double,
+    val location: String,
 )
 
 data class TicketRes(
     val tickets: List<Ticket>, // List of tickets associated with the response
     val message: String        // Additional message from the response
-)
+) {
+    val isSuccessful: Boolean
+        get() {
+            TODO()
+        }
+}

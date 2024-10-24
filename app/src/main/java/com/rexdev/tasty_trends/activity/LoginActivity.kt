@@ -1,4 +1,4 @@
-package com.rexdev.tasty_trends.Activity
+package com.rexdev.tasty_trends.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +14,6 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.rexdev.tasty_trends.R
 import com.roydev.tastytrends.LoginReq
-import com.roydev.tastytrends.LoginRes
 import com.roydev.tastytrends.RetrofitInstance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

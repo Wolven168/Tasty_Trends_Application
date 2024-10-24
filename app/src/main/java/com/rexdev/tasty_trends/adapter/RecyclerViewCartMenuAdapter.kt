@@ -1,4 +1,4 @@
-package com.rexdev.tasty_trends.Adapter
+package com.rexdev.tasty_trends.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.rexdev.tasty_trends.Global.GlobalVariables
+import com.rexdev.tasty_trends.dataClass.CartItem
+import com.rexdev.tasty_trends.global.GlobalVariables
 import com.rexdev.tasty_trends.R
 import com.squareup.picasso.Picasso
 
@@ -17,7 +18,7 @@ class RecyclerViewCartMenuAdapter(
 ) : RecyclerView.Adapter<RecyclerViewCartMenuAdapter.MyViewHolder>() {
     //val listener = ClickListenerInit()
     val app = GlobalVariables
-    var cartItemList = app.CARTLIST
+    val cartItemList = app.CARTLIST
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_cart_list, parent, false)
@@ -26,9 +27,9 @@ class RecyclerViewCartMenuAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val cartItem = cartItemList[position]
-        holder.tvItemName.text = cartItem.itemId // Or use a method to get the name
+        holder.tvItemName.text = cartItem.itemName // Or use a method to get the name
         holder.tvQuantity.text = "Quantity: ${cartItem.quantity}"
-        holder.tvPrice.text = "Price: ${cartItem.pricePerItem * cartItem.quantity}"
+        holder.tvPrice.text = "Price: ${cartItem.totalPrice()}"
 
         Picasso.get()
             .load(cartItem.itemImage)
@@ -50,6 +51,9 @@ class RecyclerViewCartMenuAdapter(
     }
 
     override fun getItemCount(): Int = cartItemList.size
+    fun submitList(cartItems: MutableList<CartItem>) {
+
+    }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val cartImage: ImageView = itemView.findViewById(R.id.ivcartImg)

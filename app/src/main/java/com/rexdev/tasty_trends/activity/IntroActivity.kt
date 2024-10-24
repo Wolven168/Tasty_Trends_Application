@@ -1,4 +1,4 @@
-package com.rexdev.tasty_trends.Activity
+package com.rexdev.tasty_trends.activity
 
 import android.content.Intent
 import android.os.Bundle

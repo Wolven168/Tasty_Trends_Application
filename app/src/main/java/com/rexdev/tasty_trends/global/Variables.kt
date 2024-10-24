@@ -1,4 +1,4 @@
-package com.rexdev.tasty_trends.Global
+package com.rexdev.tasty_trends.global
 
 import android.app.Application
 

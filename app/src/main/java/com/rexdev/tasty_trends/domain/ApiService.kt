@@ -1,6 +1,6 @@
 package com.roydev.tastytrends
 
-import com.rexdev.tasty_trends.DataClass.ShopItem
+import com.rexdev.tasty_trends.dataClass.ShopItem
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,10 +15,13 @@ interface ApiService {
     suspend fun register(@Body registerReq: RegisterReq): Response<RegisterRes>
 
     @POST("tasters/login")
-    suspend fun login(@Body request: LoginReq): LoginRes
+    suspend fun login(@Body loginReq: LoginReq): LoginRes
 
     @GET("tickets/{id}")
     suspend fun getTicket(@Path("id") ticketId: String): TicketRes
+
+    @POST("tickets/create")
+    suspend fun createTicket(@Body createTicketReq: CreateTicketReq?): TicketRes
 
     @GET("items/indexShopItems/{id}")
     suspend fun getShopItems(@Path("id") s: String): Response<List<ShopItem>>

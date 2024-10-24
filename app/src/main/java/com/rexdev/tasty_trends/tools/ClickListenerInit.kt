@@ -1,11 +1,8 @@
-package com.rexdev.tasty_trends.Tool
+package com.rexdev.tasty_trends.tools
 
-import android.content.Context
-import androidx.compose.ui.window.application
-import com.rexdev.tasty_trends.DataClass.CartItem
-import com.rexdev.tasty_trends.DataClass.ShopItem
-import com.rexdev.tasty_trends.Global.GlobalVariables
-import com.rexdev.tasty_trends.Global.Variables
+import com.rexdev.tasty_trends.dataClass.CartItem
+import com.rexdev.tasty_trends.dataClass.ShopItem
+import com.rexdev.tasty_trends.global.GlobalVariables
 
 class ClickListenerInit {
     val app = GlobalVariables

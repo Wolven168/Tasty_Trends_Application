@@ -1,14 +1,13 @@
-package com.rexdev.tasty_trends.Adapter
+package com.rexdev.tasty_trends.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.rexdev.tasty_trends.Activity.HomeActivity
-import com.rexdev.tasty_trends.DataClass.Stalls
+import com.rexdev.tasty_trends.activity.HomeActivity
+import com.rexdev.tasty_trends.dataClass.Stalls
 import com.rexdev.tasty_trends.R
 import com.squareup.picasso.Picasso
 
@@ -26,6 +25,9 @@ class RecyclerViewStallsAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val stall = stallsList[position]
+        val stallId = stall.shopId
+        val stallName = stall.shopName
+        val stallImg = stall.image
 
         // Assuming stall.image is a URL
         Picasso.get()
@@ -34,7 +36,8 @@ class RecyclerViewStallsAdapter(
             .into(holder.ivStallsImg)
 
         holder.cardView.setOnClickListener {
-            onItemClick?.invoke(stall)
+            val stallData = Stalls(stallId, stallName, stallImg)
+            onItemClick?.invoke(stallData)
         }
     }
 
