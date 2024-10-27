@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.OrderActivity">
+    tools:context=".activity.StallOwnerOrdersActivity">
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ebebeb"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +22,7 @@
             android:background="@color/green">
 
             <ImageView
-                android:id="@+id/btn_OrderBack"
+                android:id="@+id/btn_SOOBack"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="8dp"
@@ -37,20 +34,17 @@
                 app:srcCompat="@drawable/btn_back" />
 
             <TextView
-                android:id="@+id/textView21"
+                android:id="@+id/textView46"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/poppins_medium"
-                android:text="My Orders"
+                android:text="Orders"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <HorizontalScrollView
@@ -64,7 +58,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/btn_all"
+                    android:id="@+id/btn_All"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -80,7 +74,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/btn_toship"
+                    android:id="@+id/btn_Pending"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -96,7 +90,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/btn_torecieved"
+                    android:id="@+id/btn_accepted"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -108,23 +102,6 @@
                     android:padding="10dp"
                     android:text="Accepted"
                     android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/btn_completed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="5dp"
-                    android:layout_weight="1"
-                    android:autoSizeMaxTextSize="24dp"
-                    android:autoSizeMinTextSize="14dp"
-                    android:fontFamily="@font/poppins"
-                    android:padding="10dp"
-                    android:text="Completed"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -143,17 +120,13 @@
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
-
             </LinearLayout>
         </HorizontalScrollView>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvUserTickets"
+            android:id="@+id/rvStallOwnerOrders"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:layout_weight="1" />
-
+            android:layout_margin="8dp" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

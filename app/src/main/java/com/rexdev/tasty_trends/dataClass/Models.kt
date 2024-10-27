@@ -3,15 +3,12 @@ package com.rexdev.tasty_trends.dataClass
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+// ============== REQUESTS ==============
+
 data class RegisterReq(
     val user_name: String,
     val email: String,
     val password: String,
-)
-
-data class RegisterRes(
-    val message: String? = null,
-    val success: Boolean
 )
 
 data class LoginReq(
@@ -19,33 +16,9 @@ data class LoginReq(
     val password: String
 )
 
-data class LoginRes(
-    val token: String? = null, // Nullable in case the token is not provided
-    val message: String? = null,
-    val success: Boolean,
-    val id: String? = null,
-)
-
-data class UserDataReq(
-    val id: String
-)
-
-data class UserDataRes(
-    val img: String,
-    val name: String,
-    val shopId: String,
-)
-
 data class TicketReq(
     val shop_id: String, // ID of the shop where the ticket is for
     val buyer_id: String  // ID of the buyer
-)
-
-data class Ticket(
-    val id: String,      // Unique identifier for the ticket
-    val shop_id: String,  // ID of the shop associated with the ticket
-    val buyer_id: String, // ID of the buyer who purchased the ticket
-    val status: String,
 )
 
 data class CreateTicketReq(
@@ -57,13 +30,71 @@ data class CreateTicketReq(
     val location: String?
 )
 
-@Parcelize
-data class CreateTicketRes (
-    val message: String? = null,
-    val success: Boolean,
-    val errorMessage: String? = null, // Optional field for error messages
-) : Parcelable
+data class UpdateTicketStatusReq (
+    val status: String
+)
 
-data class TicketRes(
-    val message: String? = null        // Additional message from the response
+// ============== RESPONSES ==============
+
+data class GenericResponse (
+    val message: String?,
+    val success: Boolean,
+    val errorMessage: String? // Optional field for error messages
+)
+
+data class LoginRes(
+    val token: String?, // Nullable in case the token is not provided
+    val message: String?,
+    val success: Boolean,
+    val user_id: String?,
+    val user_name: String?,
+    val user_image: String?,
+    val shop_id: String?,
+    val errorMessage: String?,
+)
+
+data class ShopItemsReq(
+    val message: String?,
+    val success: Boolean,
+    val items: List<ShopItemData>?,
+    val errorMessage: String?,
+)
+
+data class GetShops(
+    val message: String?,
+    val success: Boolean,
+    val shops: List<Stalls>?,
+    val errorMessage: String?,
+)
+
+data class GetTickets(
+    val message: String?,
+    val success: Boolean,
+    val tickets: List<RefinedTicket>?
+)
+
+data class GetUserTicketData(
+    val message: String?,
+    val success: Boolean,
+    val user_name: String?,
+)
+
+data class GetShopTicketData(
+    val message: String?,
+    val success: Boolean,
+    val shop_name: String?,
+)
+
+data class GetItemTicketData(
+    val message: String?,
+    val success: Boolean,
+    val item_name: String?,
+    val item_image: String,
+)
+
+data class GetTicketData(
+    val message: String?,
+    val success: Boolean,
+    val tickets: Ticket,
+    val errorMessage: String?,
 )

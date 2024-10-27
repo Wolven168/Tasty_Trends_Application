@@ -112,20 +112,6 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/btn_AcceptTicket"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_weight="1"
-                android:background="@drawable/addtocart_bg"
-                android:fontFamily="@font/poppins"
-                android:padding="5dp"
-                android:text="Order Recieve"
-                android:textAlignment="center"
-                android:textColor="@color/darkGrey"
-                android:textSize="10sp" />
-
         </LinearLayout>
 
 

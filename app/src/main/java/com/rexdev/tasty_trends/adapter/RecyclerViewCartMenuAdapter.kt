@@ -11,13 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rexdev.tasty_trends.dataClass.CartItem
 import com.rexdev.tasty_trends.global.GlobalVariables
 import com.rexdev.tasty_trends.R
-import com.rexdev.tasty_trends.tools.ClickListenerInit
 import com.squareup.picasso.Picasso
 
 
 class RecyclerViewCartMenuAdapter(
 ) : RecyclerView.Adapter<RecyclerViewCartMenuAdapter.MyViewHolder>() {
-    private val listener = ClickListenerInit()
     private val app = GlobalVariables
     private var cartItemList = app.CARTLIST
 
@@ -28,12 +26,12 @@ class RecyclerViewCartMenuAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val cartItem = cartItemList[position]
-        holder.tvItemName.text = cartItem.itemName
+        holder.tvItemName.text = cartItem.item_name
         holder.tvQuantity.text = "${cartItem.quantity}"
         holder.tvPrice.text = "Price: ₱${cartItem.totalPrice()}"
 
         Picasso.get()
-            .load(cartItem.itemImage)
+            .load(cartItem.item_image)
             .placeholder(R.drawable.no_img_placeholder)
             .into(holder.cartImage)
 

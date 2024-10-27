@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/favView"
+    android:id="@+id/cardView"
     android:layout_width="350dp"
     android:layout_height="120dp"
     android:layout_margin="5dp"
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/StallName"
+                android:id="@+id/tvStallName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -33,7 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView33"
+                android:id="@+id/tvTicketStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
@@ -52,7 +52,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/ivcartImg"
+                android:id="@+id/ivTicketImg"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
@@ -65,7 +65,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tvmenuname"
+                    android:id="@+id/tvItemName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
@@ -73,15 +73,30 @@
                     android:textColor="@color/black"
                     android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tvmenuPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/poppins"
-                    android:text="₱50.00"
-                    android:textColor="@color/black"
-                    android:textSize="10sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView27"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:text="Quantity: " />
+
+                    <TextView
+                        android:id="@+id/tvTicketQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:fontFamily="@font/poppins"
+                        android:text="1"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"/>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -98,13 +113,13 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/textView36"
+                        android:id="@+id/tvTicketPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins"
-                        android:text="₱60.00"
+                        android:text="₱50.00"
                         android:textAlignment="viewStart"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
@@ -113,7 +128,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView34"
+                android:id="@+id/btn_CancelOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"

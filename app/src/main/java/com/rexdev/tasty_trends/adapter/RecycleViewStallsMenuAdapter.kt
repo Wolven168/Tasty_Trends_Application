@@ -27,43 +27,60 @@ class RecyclerViewStallsMenuAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = shopItemList.get(position)
-            holder.tvmenuName.text = item.itemName
-            holder.tvprice.text = "₱${item.price}"
+            holder.tvmenuName.text = item.item_name
+            holder.tvprice.text = "₱${item.item_price}"
         // Load image using Glide or Picasso
             Picasso.get()
-                .load(item.image)
+                .load(item.item_image)
                 .placeholder(R.drawable.no_img_placeholder)
                 .into(holder.ivStallmenuImg)
 
         holder.btn_favorite.setOnClickListener {
-                listener.onFavoriteClick(item)
-        }
-
-        holder.tvaddcart.setOnClickListener {
-            // Create a CartItem with quantity set to 1
-            val cartItem = item.let { it1 ->
-                CartItem(
-                    shopId = it1.shopId,
-                    itemId = it1.itemId,
-                    itemName = item.itemName,
-                    itemImage = item.image,
-                    quantity = 1,
-                    pricePerItem = item.price
-                )
-            }
-
-            if(!GlobalVariables.CARTLIST.contains(cartItem)) {
-                listener.onCartClick(cartItem) // Pass the CartItem to the listener
+            if(!GlobalVariables.FAVLIST.contains(item)) {
+                listener.onFavoriteClick(item) // Pass the CartItem to the listener
                 Snackbar.make(
                     holder.itemView,
-                    "${item.itemName} added to cart",
+                    "${item.item_name} added to favorites",
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
             else {
                 Snackbar.make(
                     holder.itemView,
-                    "${item.itemName} is already in cart",
+                    "${item.item_name} is already in favorites",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        holder.tvaddcart.setOnClickListener {
+            // Create a CartItem with quantity set to 1
+            val cartItem = item.let { it1 ->
+                    CartItem(
+                        shop_id = it1.shop_id,
+                        item_id = it1.item_id,
+                        item_name = item.item_name,
+                        item_image = item.item_image,
+                        quantity = 1,
+                        pricePerItem = item.item_price
+                    )
+
+            }
+
+            if(!GlobalVariables.CARTLIST.contains(cartItem)) {
+                if (cartItem != null) {
+                    listener.onCartClick(cartItem)
+                } // Pass the CartItem to the listener
+                Snackbar.make(
+                    holder.itemView,
+                    "${item.item_name} added to cart",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+            else {
+                Snackbar.make(
+                    holder.itemView,
+                    "${item.item_name} is already in cart",
                     Snackbar.LENGTH_SHORT
                 ).show()
             }

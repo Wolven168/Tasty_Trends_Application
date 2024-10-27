@@ -19,5 +19,4 @@ class ClickListenerInit {
     fun onRemoveCart(itemRemoveCart: CartItem) {
         app.CARTLIST.remove(itemRemoveCart)
     }
-
 }
