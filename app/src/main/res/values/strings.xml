@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Tasty_Trends</string>
-
+    <string name="ticket_accepted">Ticket Accepted</string>
+    <string name="ticket_declined">Ticket Declined</string>
+    <string name="ticket_FailedStatus">Ticket Status Failed to Update</string>
     <string name="open_nav">Open Navigation Drawer</string>
     <string name="close_nav">Close Navigation Drawer</string>
 </resources>

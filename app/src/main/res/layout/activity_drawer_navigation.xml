@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#ebebeb"
     android:fitsSystemWindows="true"
-    tools:context=".Activity.HomeActivity"
+    tools:context=".activity.HomeActivity"
     tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,7 +67,7 @@
 
                         <!-- Search EditText -->
                         <EditText
-                            android:id="@+id/editTextText"
+                            android:id="@+id/etSearchBar"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:layout_marginStart="16dp"
@@ -94,7 +94,7 @@
                             app:layout_constraintBottom_toTopOf="@+id/textView7"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/editTextText"
+                            app:layout_constraintTop_toBottomOf="@+id/etSearchBar"
                             app:srcCompat="@drawable/ads" />
 
                         <!-- TextView for stall name -->
