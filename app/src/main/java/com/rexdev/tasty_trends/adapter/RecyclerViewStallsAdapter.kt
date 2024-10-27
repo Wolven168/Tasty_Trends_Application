@@ -25,13 +25,13 @@ class RecyclerViewStallsAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val stall = stallsList[position]
-        val stallId = stall.shopId
-        val stallName = stall.shopName
-        val stallImg = stall.image
+        val stallId = stall.shop_id
+        val stallName = stall.shop_name
+        val stallImg = stall.shop_image
 
         // Assuming stall.image is a URL
         Picasso.get()
-            .load(stall.image)
+            .load(stall.shop_image)
             .placeholder(R.drawable.no_img_placeholder)
             .into(holder.ivStallsImg)
 

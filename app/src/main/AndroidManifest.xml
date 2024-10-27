@@ -33,6 +33,31 @@
             android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.FavoritesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.OrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ForgotPassActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.StallOwnerProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.StallOwnerOrdersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.StallOwnerActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".activity.IntroActivity"
             android:exported="true"
             android:theme="@style/Theme.App.SpashScreen.NoActionBar">

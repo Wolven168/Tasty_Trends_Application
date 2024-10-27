@@ -1,4 +1,4 @@
-package com.migsdev.tastytrends
+package com.rexdev.tasty_trends.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,15 +12,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.rexdev.tasty_trends.activity.HomeActivity
-import com.rexdev.tasty_trends.adapter.RecyclerViewStallsMenuAdapter
-import com.rexdev.tasty_trends.dataClass.ShopItem
 import com.rexdev.tasty_trends.R
+import com.rexdev.tasty_trends.adapter.RecyclerViewStallsMenuAdapter
+import com.rexdev.tasty_trends.global.GlobalVariables
 
 class FavoritesActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewStallsMenuAdapter
-    private var favoriteList: MutableList<ShopItem> = mutableListOf()
+    private val app = GlobalVariables
+    private var favoriteList = app.FAVLIST
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,16 +49,7 @@ class FavoritesActivity : AppCompatActivity() {
         loadFavorites()
 
         // Initialize and set the adapter
-//        adapter = RecyclerViewStallsMenuAdapter(object : OnFavoriteClickListener {
-//            override fun onFavoriteClick(item: ShopItem) {
-//                // Handle favorite click if needed
-//            }
-//
-//            override fun onCartClick(item: CartItem) {
-//                // Handle cart click if needed
-//            }
-//        }, favoriteList)
-
+        adapter = RecyclerViewStallsMenuAdapter(favoriteList)
         recyclerView.adapter = adapter
     }
 
@@ -72,18 +63,13 @@ class FavoritesActivity : AppCompatActivity() {
                 val name = entry.value as String
                 val price = sharedPreferences.getString("${name}_price", "")
                 val image = sharedPreferences.getString("${name}_image", "") // Change to String if using URLs
-
-//                if (price != null && image != null) {
-//                    favoriteList.add(ShopItem(name, price, image)) // Adjust constructor if needed
-//                }
             }
         }
-
         // Show message if no favorites are added
         if (favoriteList.isEmpty()) {
             Toast.makeText(this, "No favorites added", Toast.LENGTH_SHORT).show()
         } else {
-            adapter.notifyDataSetChanged() // Notify adapter of the data change
+            adapter!!.notifyDataSetChanged() // Notify adapter of the data change
         }
     }
 }

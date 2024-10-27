@@ -12,12 +12,12 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.rexdev.tasty_trends.R
+import com.rexdev.tasty_trends.dataClass.GenericResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.rexdev.tasty_trends.dataClass.RegisterReq
-import com.rexdev.tasty_trends.dataClass.RegisterRes
 import com.rexdev.tasty_trends.domain.RetrofitInstance
 
 class SignupActivity : AppCompatActivity() {
@@ -65,13 +65,13 @@ class SignupActivity : AppCompatActivity() {
                 val registerReq = RegisterReq(username, email, password)
                 val response = RetrofitInstance.api.register(registerReq)
 
-                Log.d("SignupActivity", "Raw Response: ${response.raw()}")
+                Log.d("SignupActivity", "Raw Response: ${response.errorMessage}")
 
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        val registerResponse = response.body()
+                    if (response.success) {
+                        val registerResponse = response.message
                         if (registerResponse != null) {
-                            Toast.makeText(this@SignupActivity, registerResponse.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@SignupActivity, registerResponse, Toast.LENGTH_SHORT).show()
                             startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
                             finish()
                         } else {
@@ -79,13 +79,13 @@ class SignupActivity : AppCompatActivity() {
                         }
                     } else {
                         // Handle error response
-                        val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                        val errorBody = response.errorMessage?: "Unknown error"
                         Log.e("SignupActivity", "Error response: $errorBody")
 
                         // Attempt to handle both JSON and plain text responses
                         try {
                             if (errorBody.startsWith("{")) { // Check if it's likely JSON
-                                val jsonResponse = Gson().fromJson(errorBody, RegisterRes::class.java)
+                                val jsonResponse = Gson().fromJson(errorBody, GenericResponse::class.java)
                                 Toast.makeText(this@SignupActivity, jsonResponse.message, Toast.LENGTH_SHORT).show()
                             } else {
                                 // Handle as a plain string

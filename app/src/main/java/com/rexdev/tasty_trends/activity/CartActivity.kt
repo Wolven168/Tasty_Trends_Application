@@ -23,8 +23,6 @@ import com.rexdev.tasty_trends.global.GlobalVariables
 import com.rexdev.tasty_trends.dataClass.CreateTicketReq
 import com.rexdev.tasty_trends.domain.RetrofitInstance
 import kotlinx.coroutines.launch
-import okio.IOException
-import retrofit2.HttpException
 
 class CartActivity : AppCompatActivity() {
 
@@ -86,8 +84,8 @@ class CartActivity : AppCompatActivity() {
             // Create the ticket request
             val ticketRequest = CreateTicketReq(
                 buyer_id = app.PROFILE_ID,
-                shop_id = cartItem.shopId,
-                item_id = cartItem.itemId,
+                shop_id = cartItem.shop_id,
+                item_id = cartItem.item_id,
                 quantity = cartItem.quantity,
                 price = cartItem.totalPrice(),
                 location = roomAddress.text.toString() // User input for location
@@ -135,8 +133,8 @@ class CartActivity : AppCompatActivity() {
             val firstCartItem = app.CARTLIST[0]
             val ticketRequest = CreateTicketReq(
                 buyer_id = app.PROFILE_ID,
-                shop_id = firstCartItem.shopId,
-                item_id = firstCartItem.itemId,
+                shop_id = firstCartItem.shop_id,
+                item_id = firstCartItem.item_id,
                 quantity = firstCartItem.quantity,
                 price = firstCartItem.totalPrice(),
                 location = roomAddress.text.toString() // Use the actual user input
@@ -178,6 +176,8 @@ class CartActivity : AppCompatActivity() {
         sharedPreferences.all.forEach { entry ->
             if (entry.key.endsWith("_name")) {
                 val shopId = entry.key.split("_")[0]
+                // Use the shopId to fetch the shopName
+                val shopName = sharedPreferences.getString("${shopId}_shop_name", null) // Assuming you save shop name with a key pattern like "shopId_shop_name"
                 val itemId = entry.value.toString()
                 val itemName = sharedPreferences.getString("${itemId}_name", null)
                 val itemImage = sharedPreferences.getString("${itemId}_image", "") ?: ""
@@ -185,7 +185,7 @@ class CartActivity : AppCompatActivity() {
                 val quantity = sharedPreferences.getInt("${itemId}_quantity", 1)
 
                 val pricePerItem = priceString.toDoubleOrNull() ?: 0.0
-                val cartItem = CartItem(shopId, itemId, itemName, itemImage, quantity, pricePerItem)
+                val cartItem = CartItem(shopId, shopName ?:  itemId, itemName, itemImage, quantity, pricePerItem) // Default to "Unknown Shop" if shopName is null
                 cartItems.add(cartItem)
             }
         }

@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -16,12 +16,16 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.rexdev.tasty_trends.adapter.RecyclerViewStallsAdapter
 import com.rexdev.tasty_trends.dataClass.Stalls
 import com.rexdev.tasty_trends.R
-import com.migsdev.tastytrends.FavoritesActivity
-import com.migsdev.tastytrends.OrderActivity
-import com.migsdev.tastytrends.ProfileActivity
+import com.rexdev.tasty_trends.global.GlobalVariables
+import com.rexdev.tasty_trends.domain.RetrofitInstance
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -29,6 +33,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewStallsAdapter: RecyclerViewStallsAdapter
     private var stallList = mutableListOf<Stalls>()
+    private val app = GlobalVariables
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,12 +58,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recyclerView.layoutManager = GridLayoutManager(this, 2)
         recyclerView.adapter = recyclerViewStallsAdapter
 
-        loadTestStallsData()
-
-        // Set click listener for the adapter
-        recyclerViewStallsAdapter.onItemClick = { stall ->
-            handleStallClick(stall)
+        recyclerViewStallsAdapter.onItemClick = { stallData ->
+            val intent = Intent(this, StallActivity::class.java)
+            intent.putExtra("stall_data", stallData)
+            startActivity(intent)
         }
+
+        loadStalls() // Load stalls from database
 
         // Initialize DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -78,6 +84,33 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
     }
 
+    private fun loadStalls() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitInstance.api.getAllShops() // Replace with your actual API call
+                if (response.success == true) {
+                    stallList.clear() // Clear the existing list
+                    response.shops?.let { stallList.addAll(it) } // Add new stalls to the list
+
+                    withContext(Dispatchers.Main) {
+                        recyclerViewStallsAdapter.notifyDataSetChanged() // Notify the adapter about data changes
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Snackbar.make(recyclerView, response.errorMessage ?: "Failed to load stalls", Snackbar.LENGTH_LONG).show()
+                        loadTestStallsData() // Load sample data
+                    }
+                }
+            } catch (e: Exception) {
+                // If fetching fails, load the sample data
+                withContext(Dispatchers.Main) {
+                    loadTestStallsData() // Load sample data
+                    Snackbar.make(recyclerView, "Failed to load stalls, showing sample data.", Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
     private fun loadTestStallsData() {
         stallList.add(Stalls("jfc_12345678901234567890123456789012", "jfc",
             R.drawable.jfc.toString()
@@ -86,13 +119,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.drawable.arnold.toString()
         ))
         recyclerViewStallsAdapter.notifyDataSetChanged()
-    }
-
-    private fun handleStallClick(stall: Stalls) {
-        when (stall.shopName) {
-            "jfc" -> startActivity(Intent(this, StallActivity::class.java)) // Navigate to JFCActivity
-            else -> Toast.makeText(this, "No activity found for this stall", Toast.LENGTH_SHORT).show()
-        }
     }
 
     // Handle navigation item selection
