@@ -82,38 +82,41 @@ class CartActivity : AppCompatActivity() {
             val cartItem = app.CARTLIST[index]
 
             // Create the ticket request
-            val ticketRequest = CreateTicketReq(
-                buyer_id = app.PROFILE_ID,
-                shop_id = cartItem.shop_id,
-                item_id = cartItem.item_id,
-                quantity = cartItem.quantity,
-                price = cartItem.totalPrice(),
-                location = roomAddress.text.toString() // User input for location
-            )
+            val ticketRequest = app.PROFILE_ID?.let {
+                CreateTicketReq(
+                    buyer_id = it,
+                    shop_id = cartItem.shop_id,
+                    item_id = cartItem.item_id,
+                    quantity = cartItem.quantity,
+                    price = cartItem.totalPrice(),
+                    location = roomAddress.text.toString() // User input for location
+                )
+            }
 
             lifecycleScope.launch {
                 try {
                     // Make the API call to create a ticket
-                    val response = RetrofitInstance.api.createTicket(ticketRequest)
+                    val response = ticketRequest?.let { RetrofitInstance.api.createTicket(it) }
 
                     // Log the response
-                    Log.d("API Response", "Response code: ${response.message}, Body: ${response.message}")
+                    if (response != null) {
+                        Log.d("API Response", "Response code: ${response.message}, Body: ${response.message}")
+                        if (response.success == true) {
+                            // Remove the item from the cart if the ticket is created successfully
+                            if (app.CARTLIST.isNotEmpty()) {
+                                app.CARTLIST.removeAt(index)
+                                recyclerViewCartAdapter.removeItem(index)
+                                recyclerViewCartAdapter!!.notifyDataSetChanged()
+                                Toast.makeText(this@CartActivity, "Ticket created successfully!", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            // Log the raw error response
+                            val errorBody = response.message?: "Unknown error"
+                            Log.e("API Error", "Response code: ${response.message}, Body: $errorBody")
 
-                    if (response.success) {
-                        // Remove the item from the cart if the ticket is created successfully
-                        if (app.CARTLIST.isNotEmpty()) {
-                            app.CARTLIST.removeAt(index)
-                            recyclerViewCartAdapter.removeItem(index)
-                            recyclerViewCartAdapter!!.notifyDataSetChanged()
-                            Toast.makeText(this@CartActivity, "Ticket created successfully!", Toast.LENGTH_SHORT).show()
+                            // Notify the user
+                            Toast.makeText(this@CartActivity, "Error creating ticket: $errorBody", Toast.LENGTH_SHORT).show()
                         }
-                    } else {
-                        // Log the raw error response
-                        val errorBody = response.message?: "Unknown error"
-                        Log.e("API Error", "Response code: ${response.message}, Body: $errorBody")
-
-                        // Notify the user
-                        Toast.makeText(this@CartActivity, "Error creating ticket: $errorBody", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     Log.e("CartActivity", "Unexpected error: ${e.message}")
@@ -131,35 +134,38 @@ class CartActivity : AppCompatActivity() {
         } else {
             // Get the first item in the cart
             val firstCartItem = app.CARTLIST[0]
-            val ticketRequest = CreateTicketReq(
-                buyer_id = app.PROFILE_ID,
-                shop_id = firstCartItem.shop_id,
-                item_id = firstCartItem.item_id,
-                quantity = firstCartItem.quantity,
-                price = firstCartItem.totalPrice(),
-                location = roomAddress.text.toString() // Use the actual user input
-            )
+            val ticketRequest = app.PROFILE_ID?.let {
+                CreateTicketReq(
+                    buyer_id = it,
+                    shop_id = firstCartItem.shop_id,
+                    item_id = firstCartItem.item_id,
+                    quantity = firstCartItem.quantity,
+                    price = firstCartItem.totalPrice(),
+                    location = roomAddress.text.toString() // Use the actual user input
+                )
+            }
 
 
             lifecycleScope.launch {
                 try {
                     // Make the API call to create a ticket for the first item
-                    val response = RetrofitInstance.api.createTicket(ticketRequest)
+                    val response = ticketRequest?.let { RetrofitInstance.api.createTicket(it) }
 
                     // Log the response
-                    Log.e("API Response", "Response code: ${response.message}, Body: ${response.message}")
+                    if (response != null) {
+                        Log.e("API Response", "Response code: ${response.message}, Body: ${response.message}")
+                        if (response.success == true) {
+                            // Remove the item from the cart if the ticket is created successfully
+                            app.CARTLIST.removeAt(0)
+                            Toast.makeText(this@CartActivity, "Ticket created successfully!", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // Log the raw error response
+                            val errorBody = response.errorMessage?: "Unknown error"
+                            Log.e("API Error", "Response code: ${response.errorMessage}, Body: $errorBody")
 
-                    if (response.success) {
-                        // Remove the item from the cart if the ticket is created successfully
-                        app.CARTLIST.removeAt(0)
-                        Toast.makeText(this@CartActivity, "Ticket created successfully!", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Log the raw error response
-                        val errorBody = response.errorMessage?: "Unknown error"
-                        Log.e("API Error", "Response code: ${response.errorMessage}, Body: $errorBody")
-
-                        // Notify the user
-                        Toast.makeText(this@CartActivity, "Error creating ticket: $errorBody", Toast.LENGTH_SHORT).show()
+                            // Notify the user
+                            Toast.makeText(this@CartActivity, "Error creating ticket: $errorBody", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 } catch (e: Exception) {
                     Log.e("CartActivity", "Unexpected error: ${e.message}")

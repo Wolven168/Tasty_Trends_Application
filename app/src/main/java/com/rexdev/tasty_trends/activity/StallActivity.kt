@@ -28,39 +28,26 @@ import retrofit2.HttpException
 class StallActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewStallMenuAdapter: RecyclerViewStallsMenuAdapter
-    private var shopItemList: MutableList<ShopItem> = mutableListOf() // Initialize the list
-    private var shop_id: String? = null
-    private lateinit var stall_name: TextView
-    private val app = GlobalVariables
-    private var varName: String? = null
+    private var shopItemList = mutableListOf<ShopItem>()
+    private var shopId: String? = null
+    private lateinit var stallName: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_stallactivity)
 
-        val shopData = intent.getParcelableExtra<Stalls>("stall_data") // Initializing parsed data
+        val shopData = intent.getParcelableExtra<Stalls>("stall_data")
         shopData?.let {
-            shop_id = it.shop_id
-            varName = it.shop_name
+            shopId = it.shop_id
+            stallName = findViewById(R.id.StallMenuName)
+            stallName.text = "${it.shop_name} Menu"
         }
 
-        stall_name = findViewById(R.id.StallMenuName)
-        stall_name.text = varName + " Menu"
-
-        // Setup edge-to-edge behavior
         setupEdgeToEdge()
-
-        // Setup RecyclerView
         setupRecyclerView()
-
-        // Load sample data
         loadSampleItemData()
-
-        // Load stall items from API
         loadStallItemsData()
-
-        // Set up buttons
         setupButtons()
     }
 
@@ -75,8 +62,7 @@ class StallActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         recyclerView = findViewById(R.id.rvStallLists)
         recyclerViewStallMenuAdapter = RecyclerViewStallsMenuAdapter(shopItemList)
-        val layoutManager = GridLayoutManager(this, 2)
-        recyclerView.layoutManager = layoutManager
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
         recyclerView.adapter = recyclerViewStallMenuAdapter
     }
 
@@ -91,79 +77,61 @@ class StallActivity : AppCompatActivity() {
     }
 
     private fun loadSampleItemData() {
-        // Create sample items
         val sampleItems = listOf(
-            ShopItem("Egg_Silog_123456",
-                "jfc_123456",
-                "Egg Silog",
-                50.00,
-                "https://gluttodigest.com/wp-content/uploads/2018/03/beef-tapsilog-silog-what-is-how-to-make-and-where-find-buy-order-best-longsilog-bistro-express-tosilog-bangsilog-spamsilog-menu-recipe-meals-restaurants-near-me-500x363.jpg",
-                true,
-                ),
-            ShopItem("Chicken_Barbeque_123456",
-                "jfc_123456",
-                "Chicken Barbeque",
-                75.00,
-                "https://www.allrecipes.com/thmb/APtZNY1GgOf3Ph0JUc-j4dImjrU=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/2467480-southern-bbq-chicken-Allrecipes-Magazine-4x3-1-3e180dccbaae446c8c2d05f708611fc6.jpg",
-                true,
-                )
+            ShopItem("Egg_Silog_123456", "jfc_123456", "Egg Silog", 50.00, "https://example.com/image1.jpg", true),
+            ShopItem("Chicken_Barbeque_123456", "jfc_123456", "Chicken Barbeque", 75.00, "https://example.com/image2.jpg", true)
         )
 
-        // Add sample items to the list
         shopItemList.addAll(sampleItems)
-
-        // Notify the adapter about data changes
         recyclerViewStallMenuAdapter.notifyDataSetChanged()
     }
 
     private fun loadStallItemsData() {
-        if (shop_id == null) {
+        shopId ?: run {
             Toast.makeText(this, "Shop ID is missing", Toast.LENGTH_SHORT).show()
             return
         }
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = RetrofitInstance.api.getShopItems(shop_id!!)
-                Log.d("StallActivity", "API Response: $response") // Log the response
+                val response = RetrofitInstance.api.getShopItems(shopId!!)
+                Log.d("StallActivity", "API Response: $response")
 
                 if (response.success) {
                     withContext(Dispatchers.Main) {
-                        shopItemList.clear() // Clear previous items
-                        response.items?.let { items ->
-                            // Convert each item into a ShopItem instance
-                            items.forEach { item ->
-                                // Create a ShopItem from each response item
-                                val shopItem = ShopItem(
-                                    item_id = item.item_id,
-                                    shop_id = item.shop_id,
-                                    item_name = item.item_name,
-                                    item_price = item.item_price,
-                                    item_image = item.item_image,
-                                    available = item.getAvailability(),
-                                )
-                                shopItemList.add(shopItem)
-                            }
-                            recyclerViewStallMenuAdapter.notifyDataSetChanged()
-                        }
+                        shopItemList.clear()
+                        response.items?.map { item ->
+                            ShopItem(
+                                item_id = item.item_id,
+                                shop_id = item.shop_id,
+                                item_name = item.item_name,
+                                item_price = item.item_price,
+                                item_image = item.item_image,
+                                available = item.getAvailability()
+                            )
+                        }?.let { shopItemList.addAll(it) }
+                        recyclerViewStallMenuAdapter.notifyDataSetChanged()
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@StallActivity, "Error: ${response.message}", Toast.LENGTH_SHORT).show()
+                        showError(response.message ?: "Unknown error")
                     }
                 }
             } catch (e: HttpException) {
                 Log.e("StallActivity", "HTTP Error: ${e.message()}")
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@StallActivity, "Network error: ${e.message()}", Toast.LENGTH_SHORT).show()
+                    showError("Network error: ${e.message()}")
                 }
             } catch (e: Exception) {
                 Log.e("StallActivity", "Error: ${e.message}")
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@StallActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    showError("Error: ${e.message}")
                 }
             }
         }
     }
 
+    private suspend fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 }
