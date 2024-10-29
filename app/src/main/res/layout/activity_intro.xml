@@ -57,7 +57,7 @@
             android:layout_width="262dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="180dp"
-            android:fontFamily="@font/poppins_semibold"
+            android:fontFamily="@font/poppins_bold"
             android:text="Order to  TASTY TREND"
             android:textColor="@color/black"
             android:textSize="34sp"
@@ -73,7 +73,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/loginbtn"
             android:layout_width="130dp"
             android:layout_height="50dp"
@@ -85,7 +85,7 @@
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/signupbtn"
             android:layout_width="130dp"
             android:layout_height="50dp"

@@ -39,6 +39,11 @@
         <menu>
 
             <item
+                android:icon="@drawable/shop_icon"
+                android:id="@+id/navShop"
+                android:title="Shop Mode"/>
+
+            <item
                 android:icon="@drawable/logout"
                 android:id="@+id/navLogout"
                 android:title="Logout"/>

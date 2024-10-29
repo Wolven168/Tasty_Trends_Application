@@ -18,6 +18,6 @@ class Variables : Application() {
         GlobalVariables.PROFILE_IMG = null
         GlobalVariables.PROFILE_NAME = null
         GlobalVariables.SHOP_ID = null
-        GlobalVariables.HOST_URL = "http://192.168.87.197:80/"
+        GlobalVariables.HOST_URL = "http://192.168.149.197:80/"
     }
 }

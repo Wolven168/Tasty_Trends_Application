@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +26,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var emailEditText: TextInputEditText
     private lateinit var passwordEditText: TextInputEditText
-    private lateinit var btnSignin: Button
+    private lateinit var btnSignin: AppCompatButton
     private val app = GlobalVariables
 
     override fun onCreate(savedInstanceState: Bundle?) {

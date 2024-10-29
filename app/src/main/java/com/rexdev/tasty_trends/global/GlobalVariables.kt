@@ -20,7 +20,7 @@ object GlobalVariables {
 
     lateinit var CARTLIST: MutableList<CartItem>
     lateinit var FAVLIST: MutableList<ShopItem>
-    var HOST_URL: String = "http://192.168.87.197:80/"
+    var HOST_URL: String = "http://192.168.149.197:80/"
     var USERTICKETS: MutableSet<Ticket>? = null
     var SHOPTICKETS: MutableSet<Ticket>? = null
     var PROFILE_ID: String = "roy_YouCurrentlyHaveNoProfileID12345"
