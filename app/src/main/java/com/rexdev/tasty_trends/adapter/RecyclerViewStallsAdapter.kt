@@ -1,5 +1,6 @@
 package com.rexdev.tasty_trends.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,16 +26,25 @@ class RecyclerViewStallsAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val stall = stallsList[position]
+
         val stallId = stall.shop_id
         val stallName = stall.shop_name
         val stallImg = stall.shop_image
 
-        // Assuming stall.image is a URL
-        Picasso.get()
-            .load(stall.shop_image)
-            .placeholder(R.drawable.no_img_placeholder)
-            .into(holder.ivStallsImg)
+        // Check if the stall image URL is null or empty
+        if (stallImg.isNullOrEmpty()) {
+            // Log the issue for debugging
+            Log.e("RecyclerViewStallsAdapter", "Image URL is null or empty for stall: $stallName")
+            holder.ivStallsImg.setImageResource(R.drawable.no_img_placeholder) // Set a placeholder if null
+        } else {
+            // Load the image with Picasso
+            Picasso.get()
+                .load(stallImg)
+                .placeholder(R.drawable.no_img_placeholder)
+                .into(holder.ivStallsImg)
+        }
 
+        // Set up the click listener for the card
         holder.cardView.setOnClickListener {
             val stallData = Stalls(stallId, stallName, stallImg)
             onItemClick?.invoke(stallData)
@@ -50,4 +60,3 @@ class RecyclerViewStallsAdapter(
         val cardView: CardView = itemView.findViewById(R.id.cardView)
     }
 }
-

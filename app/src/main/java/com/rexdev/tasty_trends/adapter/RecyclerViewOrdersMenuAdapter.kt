@@ -72,7 +72,7 @@ class RecyclerViewOrdersMenuAdapter(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.api.deleteTicket(ticket.ticket_id)
-                if (response.success) {
+                if (response.success == true) {
                     val position = ticketList.indexOf(ticket)
                     if (position != -1) {
                         ticketList.removeAt(position)
@@ -99,7 +99,7 @@ class RecyclerViewOrdersMenuAdapter(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.api.deleteTicket(ticket.ticket_id)
-                if (response.success) {
+                if (response.success == true) {
                     app.CARTLIST.add(
                         CartItem(
                             shop_id = ticket.shop_id,

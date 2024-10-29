@@ -38,10 +38,16 @@ class RecyclerViewStallOwnerOrdersAdapter(
             holder.tvItemPrice.text = ticket.price.toString()
             holder.tvQuantity.text = ticket.quantity.toString()
             holder.tvLocation.text = ticket.location
-            Picasso.get()
-                .load(ticket.item_image)
-                .placeholder(R.drawable.no_img_placeholder)
-                .into(holder.ivTicketImg)
+
+            // Check if item image is not null or empty
+            if (!ticket.item_image.isNullOrEmpty()) {
+                Picasso.get()
+                    .load(ticket.item_image)
+                    .placeholder(R.drawable.no_img_placeholder)
+                    .into(holder.ivTicketImg)
+            } else {
+                holder.ivTicketImg.setImageResource(R.drawable.no_img_placeholder) // Default image if URL is invalid
+            }
 
             holder.btn_DeleteTicket.setOnClickListener {
                 DeclineTicket(ticket, holder.cardView)
@@ -87,7 +93,7 @@ class RecyclerViewStallOwnerOrdersAdapter(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.api.updateTicketStatus(ticket.ticket_id, "Accepted")
-                if (response.success) {
+                if (response.success == true) {
                     ticket.status = "Accepted"  // Update the ticket status
                     withContext(Dispatchers.Main) {
                         Snackbar.make(view, "Ticket accepted successfully", Snackbar.LENGTH_SHORT).show()
@@ -111,7 +117,7 @@ class RecyclerViewStallOwnerOrdersAdapter(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.api.updateTicketStatus(ticket.ticket_id, "Cancelled")
-                if (response.success) {
+                if (response.success == true) {
                     ticket.status = "Cancelled"  // Update the ticket status
                     withContext(Dispatchers.Main) {
                         Snackbar.make(view, "Ticket declined successfully", Snackbar.LENGTH_SHORT).show()
@@ -135,7 +141,7 @@ class RecyclerViewStallOwnerOrdersAdapter(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.api.updateTicketStatus(ticket.ticket_id, "Completed")
-                if (response.success) {
+                if (response.success == true) {
                     val position = ticketList.indexOf(ticket)
                     ticketList.removeAt(position)  // Remove from the list
                     withContext(Dispatchers.Main) {
@@ -155,5 +161,4 @@ class RecyclerViewStallOwnerOrdersAdapter(
             }
         }
     }
-
 }

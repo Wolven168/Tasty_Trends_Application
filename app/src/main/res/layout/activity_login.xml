@@ -101,7 +101,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btnsignin"
+                        android:id="@+id/btnEditProfile"
                         android:layout_width="280dp"
                         android:layout_height="48dp"
                         android:layout_gravity="center"

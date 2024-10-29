@@ -16,6 +16,7 @@
         app:cardElevation="0dp">
 
         <ImageView
+            android:id="@+id/profile_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/person"></ImageView>
@@ -23,6 +24,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/profile_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -33,6 +35,7 @@
         android:textSize="15sp" />
 
     <TextView
+        android:id="@+id/profile_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins"

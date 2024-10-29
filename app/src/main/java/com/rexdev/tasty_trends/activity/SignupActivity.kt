@@ -69,7 +69,7 @@ class SignupActivity : AppCompatActivity() {
                 Log.d("SignupActivity", "Raw Response: ${response.errorMessage}")
 
                 withContext(Dispatchers.Main) {
-                    if (response.success) {
+                    if (response.success == true) {
                         val registerResponse = response.message
                         if (registerResponse != null) {
                             Toast.makeText(this@SignupActivity, registerResponse, Toast.LENGTH_SHORT).show()

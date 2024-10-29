@@ -1,6 +1,5 @@
 package com.rexdev.tasty_trends.activity
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -19,25 +18,18 @@ import com.rexdev.tasty_trends.global.GlobalVariables
 class FavoritesActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewStallsMenuAdapter
-    private val app = GlobalVariables
-    private var favoriteList = app.FAVLIST
+    private val favoriteList = GlobalVariables.FAVLIST // Directly use the global favorite list
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_favorites)
 
         // Setup edge-to-edge behavior
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        setupEdgeToEdge()
 
         // Back button behavior
-        val btnBack = findViewById<ImageView>(R.id.btnBack)
-        btnBack.setOnClickListener {
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             startActivity(Intent(this, HomeActivity::class.java))
         }
 
@@ -45,31 +37,22 @@ class FavoritesActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewFavorites)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
 
-        // Load the list of favorites
-        loadFavorites()
-
-        // Initialize and set the adapter
+        // Initialize and set the adapter with the global favorite list
         adapter = RecyclerViewStallsMenuAdapter(favoriteList)
         recyclerView.adapter = adapter
-    }
 
-    // Function to load favorites from SharedPreferences
-    private fun loadFavorites() {
-        val sharedPreferences = getSharedPreferences("Favorites", Context.MODE_PRIVATE)
-
-        // Iterate through the shared preferences to retrieve the saved favorites
-        sharedPreferences.all.forEach { entry ->
-            if (entry.key.endsWith("_name")) {
-                val name = entry.value as String
-                val price = sharedPreferences.getString("${name}_price", "")
-                val image = sharedPreferences.getString("${name}_image", "") // Change to String if using URLs
-            }
-        }
         // Show message if no favorites are added
         if (favoriteList.isEmpty()) {
             Toast.makeText(this, "No favorites added", Toast.LENGTH_SHORT).show()
-        } else {
-            adapter!!.notifyDataSetChanged() // Notify adapter of the data change
+        }
+    }
+
+    // Setup edge-to-edge behavior
+    private fun setupEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
     }
 }

@@ -51,16 +51,16 @@ fun ShopItemData.getAvailability(): Boolean {
 
 @Parcelize
 data class Stalls(
-    val shop_id: String,         // Unique identifier for the shop (stall)
-    val shop_name: String,       // Name of the shop (stall)
-    val shop_image: String,           // URL or resource ID for the shop's image
+    val shop_id: String?,         // Unique identifier for the shop (stall)
+    val shop_name: String?,       // Name of the shop (stall)
+    val shop_image: String?,           // URL or resource ID for the shop's image
 ) : Parcelable
 
 data class DetailedStalls(
-    val shop_id: String,         // Unique identifier for the shop (stall)
-    val shop_owner_id: String,
-    val shop_name: String,       // Name of the shop (stall)
-    val shop_image: String,           // URL or resource ID for the shop's image
+    val shop_id: String?,         // Unique identifier for the shop (stall)
+    val shop_owner_id: String?,
+    val shop_name: String?,       // Name of the shop (stall)
+    val shop_image: String?,           // URL or resource ID for the shop's image
 )
 
 data class Ticket(
@@ -93,3 +93,13 @@ data class RefinedTicket(
     var status: String,
     val location: String?,
 ) : Parcelable
+
+data class UserDetails(
+    val user_id: String?,
+    val user_name: String?,
+    val user_email: String?,
+    val user_image: String?,
+    val shop_id: String?,
+    val user_type: String?,
+    val favorites: List<ShopItem>?,
+)

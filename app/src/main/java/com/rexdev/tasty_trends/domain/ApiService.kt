@@ -1,26 +1,30 @@
 package com.roydev.tastytrends
 
 import com.rexdev.tasty_trends.dataClass.CreateTicketReq
+import com.rexdev.tasty_trends.dataClass.ForgotPass
 import com.rexdev.tasty_trends.dataClass.GenericResponse
 import com.rexdev.tasty_trends.dataClass.GetItemTicketData
 import com.rexdev.tasty_trends.dataClass.GetShopTicketData
 import com.rexdev.tasty_trends.dataClass.GetShops
-import com.rexdev.tasty_trends.dataClass.GetTicketData
 import com.rexdev.tasty_trends.dataClass.GetTickets
 import com.rexdev.tasty_trends.dataClass.GetUserTicketData
 import com.rexdev.tasty_trends.dataClass.LoginReq
 import com.rexdev.tasty_trends.dataClass.LoginRes
 import com.rexdev.tasty_trends.dataClass.RegisterReq
-import com.rexdev.tasty_trends.dataClass.ShopItem
 import com.rexdev.tasty_trends.dataClass.ShopItemsReq
-import com.rexdev.tasty_trends.dataClass.Stalls
-import com.rexdev.tasty_trends.dataClass.UpdateTicketStatusReq
+import com.rexdev.tasty_trends.dataClass.UpdateUser
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
@@ -36,8 +40,14 @@ interface ApiService {
     @POST("api/tasters/login")
     suspend fun login(@Body loginReq: LoginReq): LoginRes
 
+    @PUT("api/tasters/update/{user_id}")
+    suspend fun updateUser(@Path("user_id") user_id: String, @Body updateUser: UpdateUser): GenericResponse
+
     @GET("api/tasters/getUserName/{buyer_id}")
     suspend fun getBuyerTicketData(@Path("buyer_id") buyer_id: String): GetUserTicketData
+
+    @POST("api/forgot-password")
+    suspend fun forgotPass(@Body email: ForgotPass): GenericResponse
 
     // ================ SHOP/STALL/ITEM CONTROLS ================ //
     @GET("api/shops/indexAllShops")
@@ -72,4 +82,11 @@ interface ApiService {
     @PUT("api/tickets/{ticket_id}/{status}")
     suspend fun updateTicketStatus(@Path("ticket_id") ticket_id: String, @Body status: String): GenericResponse
 
+    //
+    @Multipart
+    @POST("3/image")
+    fun uploadImage(
+        @Header("Authorization") authHeader: String,
+        @Part image: MultipartBody.Part
+    ): Call<ResponseBody>
 }
