@@ -9,12 +9,16 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.rexdev.tasty_trends.R
+import com.rexdev.tasty_trends.domain.RetrofitInstance
 
 class IntroActivity : AppCompatActivity() {
+    private val splashScreenDuration: Long = 1000 // Adjust splash screen duration as needed
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Show the splash screen
         installSplashScreen()
@@ -22,12 +26,15 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Optional: Full-screen mode
+        // Full-screen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         supportActionBar?.hide()
 
         setContentView(R.layout.activity_intro)
+
+        // Initialize Retrofit
+        RetrofitInstance.initialize(this)
 
         // Adjust padding for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -37,25 +44,27 @@ class IntroActivity : AppCompatActivity() {
         }
 
         // Set up button listeners
-        val loginbtn = findViewById<Button>(R.id.loginbtn)
-        loginbtn.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish() // Call finish() to prevent returning to this activity
+        findViewById<Button>(R.id.loginbtn).setOnClickListener {
+            navigateToLogin()
         }
 
-        val signupbtn = findViewById<Button>(R.id.signupbtn)
-        signupbtn.setOnClickListener {
-            val intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
-            finish() // Call finish() to prevent returning to this activity
+        findViewById<Button>(R.id.signupbtn).setOnClickListener {
+            navigateToSignup()
         }
 
-        // Remove the automatic transition to LoginActivity
-        // If you want to keep the splash screen for a certain duration, you can do that here
+        // Optional delay for splash screen duration
         Handler(Looper.getMainLooper()).postDelayed({
-            // Here, you can optionally set up logic to display the main content
-            // For example, showing a welcome message or transition effect
-        }, 1000) // Adjust the duration as needed
+            // Logic to show main content can go here, if needed
+        }, splashScreenDuration)
+    }
+
+    private fun navigateToLogin() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish() // Call finish() to prevent returning to this activity
+    }
+
+    private fun navigateToSignup() {
+        startActivity(Intent(this, SignupActivity::class.java))
+        finish() // Call finish() to prevent returning to this activity
     }
 }

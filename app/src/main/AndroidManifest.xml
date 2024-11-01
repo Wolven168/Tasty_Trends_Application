@@ -39,9 +39,6 @@
             android:name=".activity.OrderActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.NotificationActivity"
-            android:exported="false" />
-        <activity
             android:name=".activity.ForgotPassActivity"
             android:exported="false" />
         <activity

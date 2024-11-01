@@ -6,9 +6,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var emailEditText: TextInputEditText
     private lateinit var passwordEditText: TextInputEditText
-    private lateinit var btnSignin: Button
+    private lateinit var btnSignin: AppCompatButton
     private val app = GlobalVariables
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
 
         emailEditText = findViewById(R.id.login_email)
         passwordEditText = findViewById(R.id.login_password)
-        btnSignin = findViewById(R.id.btnsignin)
+        btnSignin = findViewById(R.id.btnEditProfile)
 
         btnSignin.setOnClickListener {
             handleLogin()
@@ -72,13 +71,15 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val loginRes = RetrofitInstance.api.login(LoginReq(email, password))
-
+                val userdata = loginRes.userDetails
                 withContext(Dispatchers.Main) {
                     if (loginRes.success) {
-                        app.PROFILE_ID = loginRes.user_id.toString()
-                        app.PROFILE_NAME = loginRes.user_name.toString()
-                        app.PROFILE_IMG = loginRes.user_image.toString()
-                        app.SHOP_ID = loginRes.shop_id.toString()
+                        app.PROFILE_ID = userdata?.user_id.toString()
+                        app.PROFILE_NAME = userdata?.user_name.toString()
+                        app.PROFILE_EMAIL = userdata?.user_email.toString()
+                        app.PROFILE_TYPE = userdata?.user_type.toString()
+                        app.PROFILE_IMG = userdata?.user_image.toString()
+                        app.SHOP_ID = userdata?.shop_id.toString()
                         startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                     } else {
                         showToast(loginRes.message)

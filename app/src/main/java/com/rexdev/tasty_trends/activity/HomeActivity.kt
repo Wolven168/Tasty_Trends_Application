@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -13,6 +14,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
@@ -20,8 +22,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.rexdev.tasty_trends.adapter.RecyclerViewStallsAdapter
 import com.rexdev.tasty_trends.dataClass.Stalls
 import com.rexdev.tasty_trends.R
+import com.rexdev.tasty_trends.dataClass.GetShops
+import com.rexdev.tasty_trends.dataClass.UpdateUser
 import com.rexdev.tasty_trends.global.GlobalVariables
 import com.rexdev.tasty_trends.domain.RetrofitInstance
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,18 +39,34 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var recyclerViewStallsAdapter: RecyclerViewStallsAdapter
     private var stallList = mutableListOf<Stalls>()
     private val app = GlobalVariables
+    private lateinit var navigationMenu: NavigationView
+    private lateinit var profile_image : ImageView
+    private lateinit var profile_name : TextView
+    private lateinit var profile_email : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_drawer_navigation)
-
         // Apply system window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        navigationMenu = findViewById(R.id.nav_view)
+        val header = navigationMenu.getHeaderView(0)
+        profile_image = header.findViewById(R.id.profile_image)
+        profile_name = header.findViewById(R.id.profile_name)
+        profile_email = header.findViewById(R.id.profile_email)
+
+        profile_name.text = app.PROFILE_NAME
+        profile_email.text = app.PROFILE_EMAIL
+        Picasso.get()
+            .load(app.PROFILE_IMG)
+            .placeholder(R.drawable.profile)
+            .into(profile_image)
 
         val cartIcon = findViewById<ImageButton>(R.id.cartIcon)
         cartIcon.setOnClickListener {
@@ -82,33 +103,39 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+
+//        updateFavorites()
     }
 
     private fun loadStalls() {
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch {
             try {
-                val response = RetrofitInstance.api.getAllShops() // Replace with your actual API call
-                if (response.success == true) {
-                    stallList.clear() // Clear the existing list
-                    response.shops?.let { stallList.addAll(it) } // Add new stalls to the list
-
-                    withContext(Dispatchers.Main) {
-                        recyclerViewStallsAdapter.notifyDataSetChanged() // Notify the adapter about data changes
-                    }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        Snackbar.make(recyclerView, response.errorMessage ?: "Failed to load stalls", Snackbar.LENGTH_LONG).show()
-                        loadTestStallsData() // Load sample data
-                    }
-                }
+                val response = RetrofitInstance.api.getAllShops()
+                handleResponse(response)
             } catch (e: Exception) {
-                // If fetching fails, load the sample data
-                withContext(Dispatchers.Main) {
-                    loadTestStallsData() // Load sample data
-                    Snackbar.make(recyclerView, "Failed to load stalls, showing sample data.", Snackbar.LENGTH_LONG).show()
-                }
+                handleLoadFailure(e)
             }
         }
+    }
+
+    private suspend fun handleResponse(response: GetShops) {
+        if (response.success == true) {
+            stallList.clear()
+            response.shops?.let { stallList.addAll(it) }
+            recyclerViewStallsAdapter.notifyDataSetChanged()
+        } else {
+            showSnackbar(response.errorMessage ?: "Failed to load stalls")
+            loadTestStallsData()
+        }
+    }
+
+    private fun handleLoadFailure(e: Exception) {
+        showSnackbar("Failed to load stalls: ${e.message}")
+        loadTestStallsData()
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(recyclerView, message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun loadTestStallsData() {
@@ -121,6 +148,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recyclerViewStallsAdapter.notifyDataSetChanged()
     }
 
+
     // Handle navigation item selection
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -128,6 +156,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.navProfile -> startActivity(Intent(this, ProfileActivity::class.java))
             R.id.navFavorite -> startActivity(Intent(this, FavoritesActivity::class.java))
             R.id.navOrders -> startActivity(Intent(this, OrderActivity::class.java))
+            R.id.navShop -> startActivity(Intent(this, StallOwnerMenuActivity::class.java))
+            R.id.navLogout -> app.logout(this)
         }
         // Close the drawer after selecting an item
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -142,4 +172,36 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.onBackPressed()
         }
     }
+
+    private fun updateFavorites() {
+//        lifecycleScope.launch {
+//            if(app.FAVLIST.isNotEmpty()) {
+//                val updateUser = UpdateUser(
+//                    user_name = null,
+//                    email = null,
+//                    password = null,
+//                    shop_id = null,
+//                    user_image = null,
+//                    phone_num = null,
+//                    student_num = null,
+//                    favorites = app.FAVLIST
+//                )
+//
+//                try {
+//                    val response = app.PROFILE_ID?.let {
+//                        RetrofitInstance.api.updateUser(user_id = it, updateUser)
+//                    }
+//                    if (response != null) {
+//                        if(response.success == true) {
+//                            TODO()
+//                        }
+//                    }
+//                    // Handle the response if needed
+//                } catch (e: Exception) {
+////                showSnackbar("Failed to update favorites: ${e.message}")
+//                }
+//            }
+//        }
+    }
+
 }

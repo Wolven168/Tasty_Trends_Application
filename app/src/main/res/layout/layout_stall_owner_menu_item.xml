@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:padding="5dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/redbg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/close_icon" />
+
+            <ImageView
+                android:id="@+id/ivStallmenuImg"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/egg_silog"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvmenuName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Egg silog"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@+id/ivStallmenuImg"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="105dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text=" ₱50.00"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toEndOf="@+id/ivStallmenuImg"
+                app:layout_constraintTop_toBottomOf="@+id/tvmenuName" />
+
+            <EditText
+                android:id="@+id/et"
+                android:layout_width="250dp"
+                android:layout_height="48dp"
+                android:ems="10"
+                android:fontFamily="@font/poppins"
+                android:hint="enter new price"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/darkGrey"
+                android:textColorLink="@color/black"
+                app:layout_constraintStart_toEndOf="@+id/ivStallmenuImg"
+                app:layout_constraintTop_toBottomOf="@+id/et2" />
+
+            <EditText
+                android:id="@+id/et2"
+                android:layout_width="250dp"
+                android:layout_height="48dp"
+                android:ems="10"
+                android:fontFamily="@font/poppins"
+                android:hint="enter new name"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/darkGrey"
+                android:textColorLink="@color/black"
+                app:layout_constraintStart_toEndOf="@+id/ivStallmenuImg"
+                app:layout_constraintTop_toBottomOf="@+id/tvPrice" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnsignin2"
+                android:layout_width="200dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/viewpager_bkg"
+                android:fontFamily="@font/poppins"
+                android:text="Confirm edit"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                app:cornerRadius="30dp"
+                app:layout_constraintStart_toEndOf="@+id/ivStallmenuImg"
+                app:layout_constraintTop_toBottomOf="@+id/et" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

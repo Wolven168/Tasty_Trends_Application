@@ -3,6 +3,7 @@ package com.rexdev.tasty_trends.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -54,7 +55,7 @@ class SignupActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<AppCompatButton>(R.id.btnHavAccount).setOnClickListener {
+        findViewById<TextView>(R.id.btnHavAccount).setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
     }
@@ -68,7 +69,7 @@ class SignupActivity : AppCompatActivity() {
                 Log.d("SignupActivity", "Raw Response: ${response.errorMessage}")
 
                 withContext(Dispatchers.Main) {
-                    if (response.success) {
+                    if (response.success == true) {
                         val registerResponse = response.message
                         if (registerResponse != null) {
                             Toast.makeText(this@SignupActivity, registerResponse, Toast.LENGTH_SHORT).show()
