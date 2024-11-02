@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.rexdev.tasty_trends.activity.HomeActivity
@@ -30,6 +31,8 @@ class RecyclerViewStallsAdapter(
         val stallId = stall.shop_id
         val stallName = stall.shop_name
         val stallImg = stall.shop_image
+
+        holder.tvStallName.text = stallName
 
         // Check if the stall image URL is null or empty
         if (stallImg.isNullOrEmpty()) {
@@ -57,6 +60,7 @@ class RecyclerViewStallsAdapter(
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivStallsImg: ImageView = itemView.findViewById(R.id.ivStallImg)
+        val tvStallName: TextView = itemView.findViewById(R.id.tvStallName)
         val cardView: CardView = itemView.findViewById(R.id.cardView)
     }
 }

@@ -48,6 +48,9 @@
             android:name=".activity.StallOwnerProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.StallOwnerMenuActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.StallOwnerOrdersActivity"
             android:exported="false" />
         <activity

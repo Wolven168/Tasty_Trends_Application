@@ -3,6 +3,7 @@ package com.rexdev.tasty_trends.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -36,6 +37,7 @@ class SignupActivity : AppCompatActivity() {
         val btnsignup = findViewById<AppCompatButton>(R.id.btnregsiter)
 
         btnsignup.setOnClickListener {
+
             val username = findViewById<TextInputEditText>(R.id.Signup_username).text.toString()
             val email = findViewById<TextInputEditText>(R.id.signup_email).text.toString()
             val password = findViewById<TextInputEditText>(R.id.signup_password).text.toString()

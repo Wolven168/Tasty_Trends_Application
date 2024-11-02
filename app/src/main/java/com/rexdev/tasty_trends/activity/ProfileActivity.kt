@@ -75,8 +75,12 @@ class ProfileActivity : AppCompatActivity() {
         phone_num = enterPhoneNum.text.toString()
 
         confirmEditBtn.setOnClickListener {
+            val user_name = enterName.text.toString()
+            val student_num = enterStudentId.text.toString()
+            val phone_num = enterPhoneNum.text.toString()
             updateProfile(user_name, student_num, phone_num, user_image)
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -103,8 +107,11 @@ class ProfileActivity : AppCompatActivity() {
                         ),
                     )
                 }
+
                 if (response != null) {
                     if (response.success == true) {
+                        app.PROFILE_NAME = name
+                        app.PROFILE_IMG = image
                         finish()
                     }
                 }

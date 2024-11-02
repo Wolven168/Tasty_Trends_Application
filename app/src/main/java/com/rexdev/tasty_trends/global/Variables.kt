@@ -27,6 +27,6 @@ class Variables : Application() {
         GlobalVariables.PROFILE_TYPE = null
         GlobalVariables.SHOP_ID = null
         GlobalVariables.HOST_URL = "http://192.168.149.197:80/"
-        RetrofitInstance.initialize(this)
+//        RetrofitInstance.initialize(this)
     }
 }

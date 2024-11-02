@@ -34,7 +34,7 @@ class IntroActivity : AppCompatActivity() {
         setContentView(R.layout.activity_intro)
 
         // Initialize Retrofit
-        RetrofitInstance.initialize(this)
+//        RetrofitInstance.initialize(this)
 
         // Adjust padding for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

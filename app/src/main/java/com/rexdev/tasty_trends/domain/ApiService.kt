@@ -12,6 +12,7 @@ import com.rexdev.tasty_trends.dataClass.LoginReq
 import com.rexdev.tasty_trends.dataClass.LoginRes
 import com.rexdev.tasty_trends.dataClass.RegisterReq
 import com.rexdev.tasty_trends.dataClass.ShopItemsReq
+import com.rexdev.tasty_trends.dataClass.UpdateTicketStatus
 import com.rexdev.tasty_trends.dataClass.UpdateUser
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -79,8 +80,8 @@ interface ApiService {
     @DELETE("api/tickets/delete/{ticket_id}")
     suspend fun deleteTicket(@Path("ticket_id") ticket_id: String): GenericResponse
 
-    @PUT("api/tickets/{ticket_id}/{status}")
-    suspend fun updateTicketStatus(@Path("ticket_id") ticket_id: String, @Body status: String): GenericResponse
+    @POST("api/tickets/status/{ticket_id}")
+    suspend fun updateTicketStatus(@Path("ticket_id") ticket_id: String, @Body status: UpdateTicketStatus): GenericResponse
 
     //
     @Multipart

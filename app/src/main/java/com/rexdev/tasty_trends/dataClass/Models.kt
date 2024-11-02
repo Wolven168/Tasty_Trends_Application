@@ -1,7 +1,6 @@
 package com.rexdev.tasty_trends.dataClass
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 
 // ============== REQUESTS ==============
 
@@ -47,6 +46,10 @@ data class UpdateFavorites(
 
 data class ForgotPass(
     val email: String
+)
+
+data class UpdateTicketStatus(
+    val status: String
 )
 
 // ============== RESPONSES ==============

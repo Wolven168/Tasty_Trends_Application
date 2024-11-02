@@ -1,27 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
     android:layout_width="150dp"
     android:layout_height="150dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="15dp"
-    android:padding="5dp"
     android:layout_margin="5dp"
-    android:id="@+id/cardView">
-    
+    android:padding="5dp"
+    android:visibility="visible"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="15dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
-        
-        <ImageView
-            android:src="@drawable/jfc"
-            android:id="@+id/ivStallImg"
-            android:scaleType="centerCrop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvStallName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="JFC"
+                android:textColor="@color/darkGrey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/ivStallImg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/jfc" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </LinearLayout>
